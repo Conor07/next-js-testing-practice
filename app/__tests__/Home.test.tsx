@@ -1,49 +1,47 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Home from "../page";
 
 describe("Home", () => {
   it("should add a new todo", async () => {
-    render(<Home />);
-    const user = userEvent.setup();
+    render(<Home />); // ARRANGE
 
+    // ACT
     const input = screen.getByPlaceholderText("New Todo");
-    await user.type(input, "My new todo");
-    expect(input).toHaveValue("My new todo");
+    await userEvent.type(input, "My new todo");
+    expect(input).toHaveValue("My new todo"); // ASSERT
 
-    const button = screen.getByRole("button", { name: /submit/i });
-    await user.click(button);
-
-    await waitFor(() => expect(input).toHaveValue(""));
+    // ACT
+    const button = screen.getByRole("button", {
+      name: "Submit",
+    });
+    await userEvent.click(button);
+    expect(input).toHaveValue(""); // ASSERT
 
     const data = await screen.findByText("My new todo");
     expect(data).toHaveTextContent("My new todo");
   });
 
   it("should update a todo", async () => {
-    render(<Home />);
-    const user = userEvent.setup();
+    render(<Home />); // ARRANGE
 
-    const checkbox = (
-      await screen.findAllByRole("checkbox")
-    )[0] as HTMLInputElement;
+    // ACT
+    const checkbox = screen.getAllByRole("checkbox")[0] as HTMLInputElement;
     expect(checkbox.checked).toBeFalsy();
-    await user.click(checkbox);
-    expect(checkbox.checked).toBeTruthy();
+    await userEvent.click(checkbox);
+    expect(checkbox.checked).toBeTruthy(); // ASSERT
   });
 
   it("should delete a todo", async () => {
-    render(<Home />);
-    const user = userEvent.setup();
+    render(<Home />); // ARRANGE
 
-    // ensure the todo is present
-    expect(await screen.findByText("Write Code 💻")).toBeInTheDocument();
+    const todoText = screen.queryByText("Write Code 💻");
+    expect(todoText).toBeInTheDocument(); // ASSERT
 
-    const button = (await screen.findAllByTestId("delete-button"))[0];
-    await user.click(button);
+    // ACT
+    const button = screen.getAllByTestId("delete-button")[0];
+    await userEvent.click(button);
 
-    await waitFor(() => {
-      expect(screen.queryByText("Write Code 💻")).not.toBeInTheDocument();
-    });
+    expect(todoText).not.toBeInTheDocument(); // ASSERT
   });
 });
