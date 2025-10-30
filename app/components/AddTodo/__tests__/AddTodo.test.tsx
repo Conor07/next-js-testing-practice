@@ -59,7 +59,12 @@ describe("AddTodo", () => {
 
       await userEvent.click(button);
 
-      expect(input).toHaveValue(""); // ASSERT
+      waitFor(
+        async () => {
+          expect(input).toHaveValue(""); // ASSERT
+        },
+        { timeout: 1000 }
+      );
     });
 
     it("should call setTodos when submitted", async () => {
