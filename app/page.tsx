@@ -3,7 +3,7 @@
 import TodoList from "./components/TodoList/TodoList";
 import AddTodo from "./components/AddTodo/AddTodo";
 import { useState } from "react";
-import type { Todo } from "@/types/Todo";
+import { Todo } from "@/types/ToDo";
 
 export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([
